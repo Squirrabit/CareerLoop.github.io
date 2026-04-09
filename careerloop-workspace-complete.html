@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作台 - CareerLoop AI</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #fbfbfd;
+            --surface: #ffffff;
+            --surface-muted: #f5f5f7;
+            --surface-subtle: #f2f2f4;
+            --line: rgba(17, 17, 19, 0.08);
+            --line-strong: rgba(17, 17, 19, 0.14);
+            --text-strong: #1d1d1f;
+            --text-soft: #6e6e73;
+            --text-muted: #8d8d92;
+            --accent: #000000;
+            --accent-blue: #0066cc;
+            --success-ink: #20562e;
+            --success-bg: rgba(32, 86, 46, 0.08);
+            --shadow-xs: 0 2px 10px rgba(17, 17, 19, 0.04);
+            --shadow-sm: 0 10px 30px rgba(17, 17, 19, 0.06);
+            --shadow-md: 0 24px 70px rgba(17, 17, 19, 0.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            min-height: 100%;
+            background: var(--bg);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+            color: var(--text-strong);
+            font-family: "SF Pro Display", "SF Pro Text", Inter, Roboto, "Segoe UI", "PingFang SC", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button, input, textarea { font: inherit; }
+
+        .page-shell {
+            width: min(1200px, calc(100vw - 40px));
+            margin: 0 auto;
+            padding: 18px 0 120px;
+        }
+
+        .site-nav {
+            position: sticky;
+            top: 18px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 999px;
+            background: rgba(251, 251, 253, 0.72);
+            backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .site-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            padding: 0 14px;
+            border-radius: 999px;
+            color: var(--text-soft);
+            font-size: 0.94rem;
+            font-weight: 600;
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(17, 17, 19, 0.04);
+            color: var(--text-strong);
+        }
+
+        .hero-panel {
+            padding: 40px;
+            border: 1px solid var(--line);
+            border-radius: 36px;
+            background: var(--surface);
+            box-shadow: var(--shadow-md);
+        }
+
+        .workspace-hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+            gap: 28px;
+            align-items: stretch;
+        }
+
+        .workspace-hero-copy {
+            max-width: 720px;
+        }
+
+        .eyebrow {
+            margin: 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .hero-title {
+            margin: 18px 0 0;
+            font-weight: 600;
+            line-height: 1.06;
+            letter-spacing: -0.035em;
+            font-size: clamp(2.15rem, 4vw, 3.35rem);
+        }
+
+        .hero-lead {
+            margin: 22px 0 0;
+            max-width: 680px;
+            font-size: 1.12rem;
+            line-height: 1.68;
+            color: var(--text-soft);
+        }
+
+        .workspace-hero-card {
+            display: grid;
+            gap: 18px;
+            padding: 28px;
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            background: radial-gradient(circle at top right, rgba(0, 102, 204, 0.06), transparent 28%),
+                        linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .workspace-hero-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .workspace-hero-card h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 650;
+        }
+
+        .status-pill-soft {
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(17, 17, 19, 0.12);
+            background: rgba(17, 17, 19, 0.05);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .mini-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            display: grid;
+            gap: 6px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.86);
+        }
+
+        .metric-value {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        .metric-label {
+            font-size: 0.86rem;
+            color: var(--text-soft);
+        }
+
+        .analysis-layout {
+            display: grid;
+            grid-template-columns: minmax(290px, 340px) minmax(0, 1fr);
+            gap: 24px;
+            margin-top: 28px;
+            align-items: start;
+        }
+
+        .control-rail {
+            position: sticky;
+            top: 104px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            min-height: 260px;
+            padding: 30px;
+            border: 1px solid var(--line);
+            border-radius: 30px;
+            background: var(--surface);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .dashboard-card h2 {
+            margin: 0;
+            font-size: clamp(1.28rem, 2vw, 1.75rem);
+            font-weight: 650;
+            letter-spacing: -0.03em;
+        }
+
+        .dashboard-card p {
+            margin: 0;
+            color: var(--text-soft);
+            line-height: 1.65;
+        }
+
+        .stack-form {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .field {
+            display: grid;
+            gap: 9px;
+        }
+
+        .field span {
+            font-size: 0.88rem;
+            font-weight: 650;
+            color: var(--text-soft);
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 16px 17px;
+            border: 1px solid transparent;
+            border-radius: 18px;
+            background: var(--surface-muted);
+            color: var(--text-strong);
+            transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+        }
+
+        .field textarea {
+            min-height: 170px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: rgba(0, 102, 204, 0.28);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.12);
+        }
+
+        .primary-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: var(--accent);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 650;
+            cursor: pointer;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+            transition: transform 120ms ease;
+        }
+
+        .primary-button:hover {
+            transform: scale(0.99);
+        }
+
+        .studio-stack {
+            display: grid;
+            gap: 24px;
+            min-width: 0;
+        }
+
+        .workspace-summary {
+            margin-top: 0;
+            padding: 32px;
+            border: 1px solid var(--line);
+            border-radius: 34px;
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .summary-header h2 {
+            margin: 0;
+            font-size: clamp(1.28rem, 2vw, 1.75rem);
+            font-weight: 650;
+            letter-spacing: -0.03em;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .overview-stat {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: linear-gradient(180deg, #ffffff 0%, #f7f7fa 100%);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .overview-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .overview-stat strong {
+            display: block;
+            margin-top: 12px;
+            font-size: clamp(1.9rem, 3vw, 2.5rem);
+            font-weight: 650;
+            letter-spacing: -0.06em;
+        }
+
+        .overview-stat p {
+            margin: 12px 0 0;
+            color: var(--text-soft);
+            line-height: 1.66;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .insight-panel-large {
+            grid-column: span 2;
+        }
+
+        .section-stack {
+            display: grid;
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .section-item {
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+        }
+
+        .section-item:first-child {
+            padding-top: 0;
+            border-top: 0;
+        }
+
+        .section-kicker {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .section-item h3 {
+            margin: 10px 0 0;
+            font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+            font-weight: 650;
+            letter-spacing: -0.03em;
+            line-height: 1.3;
+        }
+
+        .section-item p {
+            margin: 10px 0 0;
+            color: var(--text-soft);
+            line-height: 1.7;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            padding: 0 14px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: var(--surface-muted);
+            color: var(--text-soft);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .chip-dark {
+            border-color: rgba(17, 17, 19, 0.08);
+            background: rgba(17, 17, 19, 0.95);
+            color: white;
+        }
+
+        .score-panel {
+            background: radial-gradient(circle at top left, rgba(0, 102, 204, 0.06), transparent 28%),
+                        linear-gradient(180deg, #ffffff 0%, #f6f6f9 100%);
+        }
+
+        .score-lockup {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 22px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .score-value {
+            font-size: clamp(3rem, 5vw, 4.6rem);
+            font-weight: 650;
+            letter-spacing: -0.08em;
+            line-height: 0.9;
+        }
+
+        .score-copy strong {
+            display: block;
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .score-copy p {
+            margin: 8px 0 0;
+            max-width: 34ch;
+        }
+
+        .card-list-clean {
+            margin: 10px 0 0;
+            padding-left: 18px;
+            color: var(--text-soft);
+            line-height: 1.72;
+        }
+
+        @media (max-width: 1024px) {
+            .workspace-hero-grid,
+            .analysis-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .control-rail {
+                position: static;
+            }
+
+            .overview-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-panel-large {
+                grid-column: span 1;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-shell {
+                width: calc(100vw - 24px);
+            }
+
+            .hero-panel {
+                padding: 32px 24px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mini-metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="site-nav">
+            <div class="nav-brand">
+                <div class="site-logo">CareerLoop AI</div>
+            </div>
+            <nav class="nav-links">
+                <a class="nav-link" href="careerloop-homepage-complete.html">首页</a>
+                <a class="nav-link" href="#workspace">工作台</a>
+            </nav>
+        </header>
+
+        <section class="hero-panel">
+            <div class="workspace-hero-grid">
+                <div class="workspace-hero-copy">
+                    <p class="eyebrow">Workspace</p>
+                    <h1 class="hero-title">上传简历，明确岗位，看完整分析。</h1>
+                    <p class="hero-lead">
+                        这是你的专属工作台。在这里上传简历、提交目标岗位描述，系统会先整理你的经历，再给出贴合度判断和改写建议。
+                    </p>
+                </div>
+
+                <aside class="workspace-hero-card">
+                    <div class="workspace-hero-card-header">
+                        <h3>当前工作台</h3>
+                        <span class="status-pill-soft">运行中</span>
+                    </div>
+                    <div class="mini-metric-grid">
+                        <div class="metric-card">
+                            <span class="metric-value">1</span>
+                            <span class="metric-label">简历</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">1</span>
+                            <span class="metric-label">岗位</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">32</span>
+                            <span class="metric-label">贴合度</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <div class="analysis-layout">
+            <aside class="control-rail">
+                <article class="dashboard-card">
+                    <h2>上传简历</h2>
+                    <p>支持 PDF、Word 格式</p>
+                    <form class="stack-form">
+                        <div class="field">
+                            <span>选择文件</span>
+                            <input type="file" accept=".pdf,.doc,.docx" />
+                        </div>
+                        <button type="submit" class="primary-button">开始整理</button>
+                    </form>
+                </article>
+
+                <article class="dashboard-card">
+                    <h2>提交岗位 JD</h2>
+                    <p>粘贴目标岗位描述</p>
+                    <form class="stack-form">
+                        <div class="field">
+                            <span>岗位名称（可选）</span>
+                            <input type="text" placeholder="例如：投资银行部暑期实习生" />
+                        </div>
+                        <div class="field">
+                            <span>岗位描述</span>
+                            <textarea placeholder="粘贴完整的岗位描述..."></textarea>
+                        </div>
+                        <button type="submit" class="primary-button">生成分析</button>
+                    </form>
+                </article>
+            </aside>
+
+            <div class="studio-stack">
+                <section class="workspace-summary">
+                    <div class="summary-header">
+                        <h2>黄宜生的简历分析</h2>
+                    </div>
+
+                    <div class="overview-grid">
+                        <div class="overview-stat">
+                            <span class="overview-label">目标岗位</span>
+                            <strong>投行实习</strong>
+                            <p>投资银行部暑期实习生</p>
+                        </div>
+                        <div class="overview-stat">
+                            <span class="overview-label">贴合度</span>
+                            <strong>32/100</strong>
+                            <p>缺少关键经验</p>
+                        </div>
+                        <div class="overview-stat">
+                            <span class="overview-label">匹配关键词</span>
+                            <strong>3</strong>
+                            <p>财务分析、Excel</p>
+                        </div>
+                        <div class="overview-stat">
+                            <span class="overview-label">缺失关键词</span>
+                            <strong>5</strong>
+                            <p>IPO、尽调、估值</p>
+                        </div>
+                    </div>
+
+                    <div class="insight-grid">
+                        <article class="workspace-summary score-panel">
+                            <h2>贴合度分析</h2>
+                            <div class="score-lockup">
+                                <div class="score-value">32</div>
+                                <div class="score-copy">
+                                    <strong>需要补充关键经验</strong>
+                                    <p>缺少投行核心技能的直接证明</p>
+                                </div>
+                            </div>
+                            <div class="section-stack">
+                                <div class="section-item">
+                                    <span class="section-kicker">优势</span>
+                                    <h3>财务基础扎实</h3>
+                                    <p>会计学专业背景，有财务分析实习经验</p>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">缺口</span>
+                                    <h3>缺少投行核心经验</h3>
+                                    <p>没有 IPO、尽职调查、估值建模等关键词</p>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="workspace-summary">
+                            <h2>职业画像</h2>
+                            <div class="section-stack">
+                                <div class="section-item">
+                                    <span class="section-kicker">标题</span>
+                                    <h3>黄宜生 · 会计学本科在读 · 厦门大学</h3>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">专业摘要</span>
+                                    <p>会计学本科在读，有财务分析和审计实习经验，熟悉财务报表分析和 Excel 数据处理。</p>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">核心优势</span>
+                                    <div class="chip-row">
+                                        <span class="chip-dark">财务分析能力</span>
+                                        <span class="chip-dark">Excel 熟练</span>
+                                        <span class="chip-dark">会计专业背景</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="workspace-summary insight-panel-large">
+                            <h2>岗位理解</h2>
+                            <div class="section-stack">
+                                <div class="section-item">
+                                    <span class="section-kicker">岗位名称</span>
+                                    <h3>投资银行部暑期实习生</h3>
+                                    <p>级别：校招 / 初级</p>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">必须具备</span>
+                                    <ul class="card-list-clean">
+                                        <li>财务建模和估值分析能力</li>
+                                        <li>熟悉 IPO、并购等资本市场交易</li>
+                                        <li>优秀的 Excel 和 PPT 技能</li>
+                                        <li>强大的数据分析和研究能力</li>
+                                    </ul>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">关键词</span>
+                                    <div class="chip-row">
+                                        <span class="chip">IPO</span>
+                                        <span class="chip">尽职调查</span>
+                                        <span class="chip">估值建模</span>
+                                        <span class="chip">财务分析</span>
+                                        <span class="chip">Excel</span>
+                                        <span class="chip">行业研究</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="workspace-summary insight-panel-large">
+                            <h2>表达建议</h2>
+                            <div class="section-stack">
+                                <div class="section-item">
+                                    <span class="section-kicker">定位陈述</span>
+                                    <p>会计学本科在读，具备扎实的财务分析基础和实习经验，熟练掌握 Excel 数据处理，正在积极学习投行核心技能。</p>
+                                </div>
+                                <div class="section-item">
+                                    <span class="section-kicker">后续步骤</span>
+                                    <ul class="card-list-clean">
+                                        <li>补充财务建模和估值分析的学习经历或项目</li>
+                                        <li>强调数据分析能力和对资本市场的理解</li>
+                                        <li>突出团队协作和高强度工作的适应能力</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
