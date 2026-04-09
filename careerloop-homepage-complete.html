@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerLoop AI - 让简历先被看见，让能力被准确理解</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #fbfbfd;
+            --surface: #ffffff;
+            --surface-muted: #f5f5f7;
+            --surface-subtle: #f2f2f4;
+            --line: rgba(17, 17, 19, 0.08);
+            --line-strong: rgba(17, 17, 19, 0.14);
+            --text-strong: #1d1d1f;
+            --text-soft: #6e6e73;
+            --text-muted: #8d8d92;
+            --accent: #000000;
+            --accent-blue: #0066cc;
+            --success-ink: #20562e;
+            --success-bg: rgba(32, 86, 46, 0.08);
+            --danger-ink: #7a1f1f;
+            --danger-bg: rgba(160, 44, 44, 0.08);
+            --shadow-xs: 0 2px 10px rgba(17, 17, 19, 0.04);
+            --shadow-sm: 0 10px 30px rgba(17, 17, 19, 0.06);
+            --shadow-md: 0 24px 70px rgba(17, 17, 19, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background: var(--bg);
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+            color: var(--text-strong);
+            font-family: "SF Pro Display", "SF Pro Text", Inter, Roboto, "Segoe UI", "PingFang SC", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .page-shell {
+            width: min(1200px, calc(100vw - 40px));
+            margin: 0 auto;
+            padding: 18px 0 96px;
+        }
+
+        .site-nav {
+            position: sticky;
+            top: 18px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 999px;
+            background: rgba(251, 251, 253, 0.72);
+            backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .site-logo {
+            display: inline-flex;
+            overflow: hidden;
+            flex-shrink: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-strong);
+        }
+
+        .nav-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            padding: 0 14px;
+            border-radius: 999px;
+            color: var(--text-soft);
+            font-size: 0.94rem;
+            font-weight: 600;
+            transition: background-color 140ms ease, color 140ms ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(17, 17, 19, 0.04);
+            color: var(--text-strong);
+        }
+
+        .hero-panel {
+            padding: 48px;
+            border: 1px solid var(--line);
+            border-radius: 36px;
+            background: var(--surface);
+            box-shadow: var(--shadow-md);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.8fr) minmax(320px, 0.95fr);
+            gap: 28px;
+            align-items: stretch;
+        }
+
+        .hero-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .eyebrow {
+            margin: 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .hero-title {
+            margin: 18px 0 0;
+            max-width: 14ch;
+            font-weight: 600;
+            line-height: 1.06;
+            letter-spacing: -0.035em;
+        }
+
+        .hero-title-home {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            width: fit-content;
+            max-width: 100%;
+            font-size: clamp(2.35rem, 4.6vw, 3.9rem);
+        }
+
+        .hero-title-line {
+            display: block;
+            white-space: nowrap;
+        }
+
+        .hero-title-line-soft {
+            max-width: none;
+            font-weight: inherit;
+            color: inherit;
+        }
+
+        .hero-lead {
+            margin: 22px 0 0;
+            max-width: 760px;
+            font-size: 1.12rem;
+            line-height: 1.68;
+            color: var(--text-soft);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .primary-button,
+        .ghost-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 0.95rem;
+            font-weight: 650;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            transition: transform 120ms ease, opacity 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        }
+
+        .primary-button {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+        }
+
+        .ghost-button {
+            background: var(--surface);
+            color: var(--text-strong);
+            border-color: var(--line-strong);
+        }
+
+        .primary-button:hover,
+        .ghost-button:hover {
+            transform: scale(0.99);
+        }
+
+        .hero-side-card {
+            display: grid;
+            align-content: start;
+            gap: 18px;
+            padding: 28px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            background: linear-gradient(180deg, #ffffff 0%, #f7f7f9 100%);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .side-label {
+            margin: 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .hero-side-card h2 {
+            margin: 0;
+            font-size: clamp(1.28rem, 2vw, 1.75rem);
+            font-weight: 650;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-side-card p {
+            margin: 0;
+            color: var(--text-soft);
+            line-height: 1.65;
+        }
+
+        .mini-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            display: grid;
+            gap: 6px;
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: var(--surface);
+        }
+
+        .metric-value {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+        }
+
+        .metric-label {
+            font-size: 0.86rem;
+            color: var(--text-soft);
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .status-pill,
+        .plan-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 42px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--text-strong);
+            font-size: 0.92rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+        }
+
+        .status-ok {
+            background: #1d8f46;
+        }
+
+        .plan-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .plan-pill {
+            color: var(--text-soft);
+        }
+
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-shell {
+                width: calc(100vw - 24px);
+            }
+
+            .hero-panel {
+                padding: 32px 24px;
+            }
+
+            .mini-metric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <header class="site-nav">
+            <div class="nav-brand">
+                <div class="site-logo">CareerLoop AI</div>
+            </div>
+            <nav class="nav-links">
+                <a class="nav-link" href="#home">首页</a>
+                <a class="nav-link" href="#workspace">工作台</a>
+            </nav>
+        </header>
+
+        <section class="hero-panel">
+            <div class="hero-grid">
+                <div class="hero-column">
+                    <p class="eyebrow">CareerLoop AI</p>
+                    <h1 class="hero-title hero-title-home">
+                        <span class="hero-title-line">让简历先被看见</span>
+                        <span class="hero-title-line hero-title-line-soft">让能力被准确理解</span>
+                    </h1>
+                    <p class="hero-lead">
+                        CareerLoop 会先把经历整理清楚，再把能力放回目标岗位的语境里。
+                        不是把简历改得更热闹，而是让真正重要的东西更早被看见。
+                    </p>
+                    <div class="hero-actions">
+                        <a class="primary-button" href="#workspace">开始体验</a>
+                        <a class="ghost-button" href="#workspace">查看工作台</a>
+                    </div>
+                </div>
+
+                <aside class="hero-side-card">
+                    <p class="side-label">现在的体验</p>
+                    <h2>先整理，再判断，再改写。</h2>
+                    <p>
+                        上传简历，明确岗位方向。系统会先替你读懂内容，再给出更贴近岗位语境的判断和改写建议。
+                    </p>
+                    <div class="mini-metric-grid">
+                        <div class="metric-card">
+                            <span class="metric-value">4</span>
+                            <span class="metric-label">准备层级</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">4</span>
+                            <span class="metric-label">服务层级</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">1</span>
+                            <span class="metric-label">专属工作台</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="hero-meta">
+                <div class="status-pill">
+                    <span class="status-dot status-ok"></span>
+                    服务状态 正常
+                </div>
+                <div class="status-pill">当前版本 0.1.0</div>
+                <div class="status-pill">Basic / Plus / Pro / Ultra</div>
+            </div>
+            <div class="plan-strip">
+                <span class="plan-pill">BASIC</span>
+                <span class="plan-pill">PLUS</span>
+                <span class="plan-pill">PRO</span>
+                <span class="plan-pill">ULTRA</span>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
